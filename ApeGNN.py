@@ -79,7 +79,7 @@ class GraphConv(nn.Module):
 
 class ApeGNN(nn.Module):
     def __init__(self, data_config, args_config, adj_mat):
-        super(GADC, self).__init__()
+        super(ApeGNN, self).__init__()
 
         self.n_users = data_config['n_users']
         self.n_items = data_config['n_items']
