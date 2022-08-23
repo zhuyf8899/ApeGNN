@@ -21,8 +21,16 @@ class GraphConv(nn.Module):
 
         self.dropout = nn.Dropout(p=mess_dropout_rate)  # mess dropout
         self.dev = device
-        self.t_u = torch.FloatTensor([t_u]).to(self.dev)
-        self.t_i = torch.FloatTensor([t_i]).to(self.dev)
+        # self.t_u = torch.FloatTensor([t_u]).to(self.dev)
+        # self.t_i = torch.FloatTensor([t_i]).to(self.dev)
+        self.t_u = nn.Parameter(torch.FloatTensor(1), requires_grad=True)
+        self.t_i = nn.Parameter(torch.FloatTensor(1), requires_grad=True)
+        if self.n_users == 6040:
+            self.t_u.data.fill_(2)
+            self.t_i.data.fill_(3)
+        else:
+            self.t_u.data.fill_(0.5)
+            self.t_i.data.fill_(0.5)
 
     def _sparse_dropout(self, x, rate=0.5):
         noise_shape = x._nnz()
@@ -39,10 +47,11 @@ class GraphConv(nn.Module):
         out = torch.sparse.FloatTensor(i, v, x.shape).to(x.device)
         return out * (1. / (1 - rate))
 
-    def forward(self, user_embed, item_embed,
-                mess_dropout=True, edge_dropout=True):
+    def forward(self, user_embed, item_embed, mess_dropout=True, edge_dropout=True):
         all_embed = torch.cat([user_embed, item_embed], dim=0)
         agg_embed = all_embed
+        # print("t_u: ", self.t_u)
+        # print("t_i: ", self.t_i)
         u_weight = (torch.exp(-self.t_u).to(self.dev) *
                     torch.pow(self.t_u, torch.FloatTensor([0]).to(self.dev)).to(self.dev)
                     / torch.FloatTensor([factorial(0)]).to(self.dev))
@@ -79,7 +88,7 @@ class GraphConv(nn.Module):
 
 class ApeGNN(nn.Module):
     def __init__(self, data_config, args_config, adj_mat):
-        super(GADC, self).__init__()
+        super(ApeGNN, self).__init__()
 
         self.n_users = data_config['n_users']
         self.n_items = data_config['n_items']
@@ -101,8 +110,8 @@ class ApeGNN(nn.Module):
         self.device = torch.device("cuda:0") if args_config.cuda else torch.device("cpu")
         # torch.cuda.set_device(args_config.gpu_id)
         # self.device = args_config.gpu_id
-        self.t_u = args_config.t_u
-        self.t_i = args_config.t_i
+        # self.t_u = args_config.t_u
+        # self.t_i = args_config.t_i
         self._init_weight()
         self.user_embed = nn.Parameter(self.user_embed)
         self.item_embed = nn.Parameter(self.item_embed)
@@ -124,8 +133,8 @@ class ApeGNN(nn.Module):
                          interact_mat=self.sparse_norm_adj,
                          edge_dropout_rate=self.edge_dropout_rate,
                          mess_dropout_rate=self.mess_dropout_rate,
-                         t_u=self.t_u,
-                         t_i=self.t_i,
+                         # t_u=self.t_u,
+                         # t_i=self.t_i,
                          device=self.device)
 
     def _convert_sp_mat_to_sp_tensor(self, X):

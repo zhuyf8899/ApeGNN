@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="zhangdan@58.18.174.252:2224" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="zhangdan@58.18.174.252:2224">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/code/ApeGNN" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zhuyifan@120.131.0.100:23333">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/code/dan/ApeGNN" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>
